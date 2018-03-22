@@ -1,0 +1,30 @@
+<% include partials/header %>
+<div class="container">
+	<header class="jumbotron">
+		<div class="container">
+			<h1>This Week's Players</h1>
+			<p>View your friends who will be winning with you.</p>
+				<p>
+					<a class="btn btn-primary btn-large" href="/players/newplayer">Add New Player</a>
+				</p>
+			</div>
+		</div>
+	</header>
+
+	<div class="row text-center"  style="display:flex; flex-wrap: wrap">
+			<% players.forEach(function(player){  %>
+				<div class="col-md-3 col-sm-6">
+					<div class="thumbnail">
+						<img src= "<%= player.image %> ">
+						<div class="caption">
+								<h4><%= player.person %></h4>
+							</div>
+						<p>
+							<a href="players/<%= player._id %>" class= "btn btn-primary">More Info</a>
+						</p>
+					</div> 	
+				</div>
+			<% });  %>
+	</div>  <% // for div with class of "row" %>	
+</div>  <% // for container %>
+<% include partials/footer %>
