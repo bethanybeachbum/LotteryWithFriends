@@ -1,13 +1,17 @@
 // LOTTERY WITH FRIENDS
 
-// Two required lines for every EXPRESS JS ap
-var express 		= require("express"),
-		app 				= express(),
-		bodyParser 	= require("body-parser"),
-		mongoose 		= require("mongoose"),
-		Ticket 			= require("./models/ticket"),
-		Player			= require("./models/player")
+// FirstTwo lines are required for every EXPRESS JS ap
+var express 			= require("express"),
+		app 					= express(),
+		bodyParser 		= require("body-parser"),
+		mongoose 			= require("mongoose"),
+		Ticket 				= require("./models/ticket"),
+		Player				= require("./models/player"),
+		seedTicketDB	= require("./seedTickets"),
+		seedPlayerDB	= require("./seedPlayers")
 
+seedPlayerDB();
+seedTicketDB();
 
 mongoose.connect("mongodb://localhost/lotteryDB");
 app.use(bodyParser.urlencoded({extended: true}));
