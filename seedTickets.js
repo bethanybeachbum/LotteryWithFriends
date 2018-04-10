@@ -1,5 +1,6 @@
 var mongoose 	= require("mongoose");
 var Ticket 		= require("./models/ticket");
+var Comment		= require("./models/comment");
 
 var ticketData = [
 	{
@@ -24,17 +25,29 @@ function seedTicketDB(){
 		Ticket.remove({}, function(err){
 			if(err){
 				console.log(err);
-			}
-			console.log("removed tickets");
-		});
+			} 
+			console.log("Removed Tickets");	
 		// Add a few tickets
 		ticketData.forEach(function(seed){
 				Ticket.create(seed, function (err, ticketData){
 						if(err){
 							console.log(err);
 						} else {
-							console.log("added a ticket");
+							console.log("Added a ticket");
+							Comment.create(
+									{text: "this ticket may be the winner!!!!",
+									 author: "Jomer"
+										 }, function(err, comment){
+												if(err) {
+													console.log(err);
+												} else {
+													ticketData.comments.push(comment);
+													ticketData.save();
+													console.log("Created new comment");
+												}
+										});
 						}
+					});
 				});
 		});
 }

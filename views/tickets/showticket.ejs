@@ -1,0 +1,19 @@
+
+
+<% include ../partials/header %>
+
+<h1> <%= ticket.number %> </h1>
+
+<p>Description: </p><p><%= ticket.description %></p>
+
+<p>
+    <a class="btn btn-success" href="/tickets/<%= ticket._id %>/comments/new">Add New Comment</a>
+</p>
+
+<% ticket.comments.forEach(function(comment) { %>
+  <p>
+    <strong><%= comment.author %></strong> - <%= comment.text %> </p>
+<% }); %>
+
+<% include ../partials/footer %>
+

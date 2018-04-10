@@ -1,0 +1,18 @@
+<% include ../partials/header %>
+
+<h1><%= player.person %></h1>
+
+<img src="<%= player.image %>">
+
+<p><%= player.contactInfo %></p>
+<p>	 Wager: <%= player.wager %></p>
+
+<p>
+    <a class="btn btn-success" href="/players/<%= player._id %>/comments/new">Add New Comment</a>
+</p>
+
+<% player.comments.forEach(function(comment) { %>
+  <p>
+    <strong><%= comment.author %></strong> - <%= comment.text %> </p>
+<% }); %>
+<% include ../partials/footer %>
