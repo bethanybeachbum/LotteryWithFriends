@@ -4,7 +4,7 @@ var playerSchema = new mongoose.Schema({
 	person: String,
 	image: String,
 	contactInfo: String,
-	wager: Number,
+	wager: String,
 	comments: [
       {
          type: mongoose.Schema.Types.ObjectId,

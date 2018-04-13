@@ -11,16 +11,16 @@ var express 			= require("express"),
 		seedTicketDB	= require("./seedTickets"),
 		seedPlayerDB	= require("./seedPlayers")
 
-seedPlayerDB();
-seedTicketDB();
-
 mongoose.connect("mongodb://localhost/lotteryDB");
 app.use(bodyParser.urlencoded({extended: true}));
 app.set("view engine", "ejs");
+app.use(express.static(__dirname + "/public"))
+
+seedPlayerDB();
+seedTicketDB();
 
 // ******************************************
 // this is the creation of the landing page
-console.log("Landing Page Created -- slash");
 app.get("/", function(req,res){
 	res.render("landing");
 });
@@ -30,9 +30,7 @@ app.get("/", function(req,res){
 // TICKETS
 // ******************************************
 // ******************************************
-// INDEX - show all tickets -- matches line 133
-// shows us all of the tickets
-console.log("INDEX TICKETS Route Initiated -- slash tickets & app GET");
+// INDEX - show all tickets 
 // ******************************************
 app.get("/tickets", function(req, res){
 	// get all tickets from lotteryBD database
@@ -46,7 +44,7 @@ app.get("/tickets", function(req, res){
 });
 
 // ******************************************
-// CREATE - add new player to database -- matches line 145
+// CREATE - add new player to database 
 // does logic of adding tickets
 console.log("CREATE TICKETS Route Initiated -- slash tickets & app POST");
 // ******************************************
@@ -97,38 +95,38 @@ app.get("/tickets/:id", function(req, res){
 // ******************************************
 // COMMENTS ROUTE
 // ******************************************
-								app.get ("/tickets/:id/ticketcomments/new", function(req, res){
-									// find ticket by ID 
-									Ticket.findById(req.params.id, function(err, ticket){
-										if(err){
-											console.log(err);
-										} else {
-											res.render("ticketcomments/new", {ticket: ticket})
-										}
-									});
-								});
+app.get ("/tickets/:id/ticketcomments/new", function(req, res){
+	// find ticket by ID 
+	Ticket.findById(req.params.id, function(err, ticket){
+		if(err){
+			console.log(err);
+		} else {
+			res.render("ticketcomments/new", {ticket: ticket})
+		}
+	});
+});
 
 // The data that gets posted is coming from a form in the view, it gets parsed by body-parser
 // and added to the req.body object where it can be accessed in the POST route.
 
-			app.post("/tickets/:id/ticketcomments", function(req, res){
-				// lookup campground using ID
-				Ticket.findById(req.params.id, function(err, ticket){
-					if(err) {
-						console.log(err);
-						res.redirect("/tickets");
-					} else {
-						Comment.create(req.body.comment, function(err,comment){
-							if(err){
-							 console.log(err);
-							 } else {
-								ticket.comments.push(ticketcomment);	
-								ticket.save();
-								res.redirect('/tickets/' + ticket._id);
-							 }
-						});
-					}
-				});
+app.post("/tickets/:id/comments", function(req, res){
+	// lookup campground using ID
+	Ticket.findById(req.params.id, function(err, ticket){
+		if(err) {
+			console.log(err);
+			res.redirect("/tickets");
+		} else {
+			Comment.create(req.body.comment, function(err,comment){
+				if(err){
+				 console.log(err);
+				 } else {
+					ticket.comments.push(comment);	
+					ticket.save();
+					res.redirect('/tickets/' + ticket._id);
+				 }
+			});
+		}
+	});
 });	
 // 	create new comment
 // 	connect new comment to campground
@@ -143,8 +141,7 @@ app.get("/tickets/:id", function(req, res){
 
 
 // ******************************************
-// INDEX -- show all players -- matches line 76
-console.log("INDEX PLAYERS Route Initiated --  slash players & APP GET");
+// INDEX -- show all players 
 // ******************************************
 app.get("/players", function(req, res){
 	// get all tickets from lotteryBD database
@@ -159,10 +156,9 @@ app.get("/players", function(req, res){
 
 // ******************************************
 // CREATE - add new player to database -- matches line 82
-console.log("CREATE PLAYER Route Initiated -- slash players & APP POST");
-	// ******************************************
+// ******************************************
 app.post("/players", function(req, res){
-	// get data from form
+// get data from form
 	var person = req.body.person;
 	var image = req.body.image;
 	var contactInfo = req.body.contactInfo;
@@ -189,8 +185,7 @@ Player.create(newPlayer, function(err, newlyCreated){
 });
 
 // ******************************************	
-// NEW form to create new player -- matches line 111
-console.log("SHOW FORM Page For Player -- slash players slash newplayer");
+// NEW form to create new player 
 // ******************************************
 
 app.get("/players/newplayer", function(req, res){
@@ -199,34 +194,33 @@ app.get("/players/newplayer", function(req, res){
 
 // ******************************************
 // SHOW -- Shows more info about player - matches line 120
-console.log("SHOW ROUTE For Detail Information on a Player -- /players/:id");
 // ******************************************
 
 app.get("/players/:id", function(req, res){
 	// find the ticket with the provided ID
-			Player.findById(req.params.id).populate("comments").exec(function(err, foundPlayer){
-					if(err) {
-						console.log(err);
-					} else {
-						console.log(foundPlayer);
-						
-						// render show template with that ticket
-					 res.render ("players/showplayer", {player: foundPlayer});
-					}
-			});
+	Player.findById(req.params.id).populate("comments").exec(function(err, foundPlayer){
+		if(err) {
+			console.log(err);
+		} else {
+			console.log(foundPlayer);
+
+			// render show template with that ticket
+		 res.render ("players/showplayer", {player: foundPlayer});
+		}
+	});
 });
 
 // ******************************************
-// COMMENTS ROUTE
+// COMMENTS ROUTE FOR PLAYERS
 // ******************************************
 
-app.get ("/players/:id/comments/new", function(req, res){
+app.get ("/players/:id/playercomments/new", function(req, res){
 	// find ticket by ID 
 	Player.findById(req.params.id, function(err, player){
 		if(err){
 			console.log(err);
 		} else {
-			res.render("comments/new", {player: player})
+			res.render("playercomments/new", {player: player})
 		}
 	});
 });
@@ -236,12 +230,11 @@ app.get ("/players/:id/comments/new", function(req, res){
 
 app.post("/players/:id/comments", function(req, res){
 	// lookup campground using ID
-	Ticket.findById(req.params.id, function(err, player){
+	Player.findById(req.params.id, function(err, player){
 		if(err) {
 			console.log(err);
 			res.redirect("/players");
 		} else {
-			// req.body.comment has both pieces of comment info
 			Comment.create(req.body.comment, function(err,comment){
 				if(err){
 				 console.log(err);
@@ -253,12 +246,7 @@ app.post("/players/:id/comments", function(req, res){
 			});
 		}
 	});
-	
-	//create new comment
-	//connect new comment to campground
-	//redirect to campground show page
-});
-
+});	
 
 // ******************************************
 // START CODEANYWHERE SERVER

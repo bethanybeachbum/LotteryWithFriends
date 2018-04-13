@@ -6,17 +6,17 @@ var ticketData = [
 	{
 	number: "00 11 22 33 44 55 ",
 	image: "http://lotoonlayn.ru/wp-content/uploads/2014/12/Powerball-Illinois-ticket-e1419248428245-225x300.jpg",
-	description: "Winning Ticket"
+	description: "Lorem ipsum dolor amet chicharrones keytar readymade gochujang leggings ethical. Jianbing blog chambray 8-bit venmo chia, vexillologist VHS freegan YOLO tumeric pug salvia echo park listicle. Knausgaard brooklyn poutine letterpress, ramps kale chips humblebrag shabby chic pop-up banjo tofu man braid irony. Cardigan activated charcoal raw denim church-key, bitters enamel pin authentic. Air plant roof party pork belly locavore, try-hard schlitz gluten-free. Celiac etsy blue bottle offal glossier"
 	},
 	{
 	number: "00 11 22 33 44 55 ",
 	image: "https://www.researchgate.net/profile/Lovemore_Gunda/publication/264155464/figure/fig1/AS:295983930986508@1447579476894/Sample-LOTTO-TM-Betting-Card.png",
-	description: "Second Winning Ticket"
+	description: "Lorem ipsum dolor amet chicharrones keytar readymade gochujang leggings ethical. Jianbing blog chambray 8-bit venmo chia, vexillologist VHS freegan YOLO tumeric pug salvia echo park listicle. Knausgaard brooklyn poutine letterpress, ramps kale chips humblebrag shabby chic pop-up banjo tofu man braid irony. Cardigan activated charcoal raw denim church-key, bitters enamel pin authentic. Air plant roof party pork belly locavore, try-hard schlitz gluten-free. Celiac etsy blue bottle offal glossier"
 	},
 	{
 	number: "00 11 22 33 44 55 ",
 	image: "https://cdn20.patchcdn.com/users/22887410/20170923/112817/styles/T800x600/public/processed_images/powerball-6-dollar-ticket-1506180432-3914.jpg",
-	description: "Third Winning Ticket"
+	description: "Lorem ipsum dolor amet chicharrones keytar readymade gochujang leggings ethical. Jianbing blog chambray 8-bit venmo chia, vexillologist VHS freegan YOLO tumeric pug salvia echo park listicle. Knausgaard brooklyn poutine letterpress, ramps kale chips humblebrag shabby chic pop-up banjo tofu man braid irony. Cardigan activated charcoal raw denim church-key, bitters enamel pin authentic. Air plant roof party pork belly locavore, try-hard schlitz gluten-free. Celiac etsy blue bottle offal glossier"
 	}
 ]
 
