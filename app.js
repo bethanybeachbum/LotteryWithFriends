@@ -11,16 +11,16 @@ var express 			= require("express"),
 	seedTicketDB		= require("./seedTickets"),
 	seedPlayerDB		= require("./seedPlayers")
 
-seedPlayerDB();
-seedTicketDB();
-
 mongoose.connect("mongodb://localhost/lotteryDB");
 app.use(bodyParser.urlencoded({extended: true}));
 app.set("view engine", "ejs");
+app.use(express.static(__dirname + "/public"))
+
+seedPlayerDB();
+seedTicketDB();
 
 // ******************************************
 // this is the creation of the landing page
-console.log("Landing Page Created -- slash");
 app.get("/", function(req,res){
 	res.render("landing");
 });
@@ -30,9 +30,7 @@ app.get("/", function(req,res){
 // TICKETS
 // ******************************************
 // ******************************************
-// INDEX - show all tickets -- matches line 133
-// shows us all of the tickets
-console.log("INDEX TICKETS Route Initiated -- slash tickets & app GET");
+// INDEX - show all tickets 
 // ******************************************
 app.get("/tickets", function(req, res){
 	// get all tickets from lotteryBD database
@@ -46,7 +44,7 @@ app.get("/tickets", function(req, res){
 });
 
 // ******************************************
-// CREATE - add new player to database -- matches line 145
+// CREATE - add new player to database 
 // does logic of adding tickets
 console.log("CREATE TICKETS Route Initiated -- slash tickets & app POST");
 // ******************************************
@@ -159,7 +157,7 @@ app.get("/players", function(req, res){
 console.log("CREATE PLAYER Route Initiated -- slash players & APP POST");
 	// ******************************************
 app.post("/players", function(req, res){
-	// get data from form
+// get data from form
 	var person = req.body.person;
 	var image = req.body.image;
 	var contactInfo = req.body.contactInfo;
@@ -201,20 +199,20 @@ console.log("SHOW ROUTE For Detail Information on a Player -- /players/:id");
 
 app.get("/players/:id", function(req, res){
 	// find the ticket with the provided ID
-			Player.findById(req.params.id).populate("comments").exec(function(err, foundPlayer){
-					if(err) {
-						console.log(err);
-					} else {
-						console.log(foundPlayer);
-						
-						// render show template with that ticket
-					 res.render ("players/showplayer", {player: foundPlayer});
-					}
-			});
+	Player.findById(req.params.id).populate("comments").exec(function(err, foundPlayer){
+		if(err) {
+			console.log(err);
+		} else {
+			console.log(foundPlayer);
+
+			// render show template with that ticket
+		 res.render ("players/showplayer", {player: foundPlayer});
+		}
+	});
 });
 
 // ******************************************
-// COMMENTS ROUTE
+// COMMENTS ROUTE FOR PLAYERS
 // ******************************************
 
 app.get ("/players/:id/comments/new", function(req, res){
@@ -238,7 +236,6 @@ app.post("/players/:id/comments", function(req, res){
 			console.log(err);
 			res.redirect("/players");
 		} else {
-			// req.body.comment has both pieces of comment info
 			Comment.create(req.body.comment, function(err,comment){
 				if(err){
 				 console.log(err);
