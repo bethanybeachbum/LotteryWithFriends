@@ -17,6 +17,7 @@ seedTicketDB();
 mongoose.connect("mongodb://localhost/lotteryDB");
 app.use(bodyParser.urlencoded({extended: true}));
 app.set("view engine", "ejs");
+app.use(express.static(__dirname + "/public"));
 
 // ******************************************
 // this is the creation of the landing page
