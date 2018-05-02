@@ -294,6 +294,22 @@ app.post("/register", function(req,res){
     });
 });
 
+//  LOG IN ROUTES
+// we need a get request to show the form
+// then a post to do the logging in
+
+// show login in form:
+app.get("/login", function(req, res) {
+    res.render("login");
+});
+// handle sign up logic
+app.post("/login", passport.authenticate("local",
+    {
+        successRedirect: "/players",
+        failureRedirect: "/login"
+    }), function(req, res){
+});
+
 
 // ******************************************
 // START Cloud9 SERVER for LOTTERY WITH FRIENDS
