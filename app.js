@@ -34,6 +34,11 @@ passport.use(new LocalStrategy(User.authenticate()));
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
 
+app.use(function(req, res, next){
+	res.locals.currentUser = req.user;
+	next();
+});
+
 
 // ******************************************
 // this is the creation of the landing page
@@ -42,11 +47,10 @@ app.get("/", function(req,res){
 	res.render("landing");
 });
 
-// ******************************************
-// ******************************************
+// ************************************************************************************
 // TICKETS
-// ******************************************
-// ******************************************
+// ************************************************************************************
+
 // INDEX - show all tickets -- matches line 133
 // shows us all of the tickets
 console.log("INDEX TICKETS Route Initiated -- slash tickets & app GET");
@@ -158,7 +162,6 @@ app.get("/tickets/:id", function(req, res){
 
 // ******************************************
 // INDEX -- show all players 
-console.log("INDEX PLAYERS Route Initiated --  slash players & APP GET");
 // ******************************************
 app.get("/players", function(req, res){
 	// get all tickets from lotteryBD database
@@ -166,15 +169,14 @@ app.get("/players", function(req, res){
 		if(err){
 			console.log(err);
 		} else {
-			res.render("players/indexplayers", {players: allPlayers});
+			res.render("players/indexplayers", {players: allPlayers, currentUser: req.user});
 		}
 	});
 });
 
 // ******************************************
 // CREATE - add new player to database 
-console.log("CREATE PLAYER Route Initiated -- slash players & APP POST");
-	// ******************************************
+// ******************************************
 app.post("/players", function(req, res){
 	// get data from form
 	var person = req.body.person;
@@ -234,7 +236,7 @@ app.get("/players/:id", function(req, res){
 // COMMENTS ROUTE
 // ******************************************
 
-app.get ("/players/:id/comments/new", function(req, res){
+app.get ("/players/:id/comments/new", isLoggedIn, function(req, res){
 	// find player by ID 
 	Player.findById(req.params.id, function(err, player){
 		if(err){
@@ -248,7 +250,7 @@ app.get ("/players/:id/comments/new", function(req, res){
 // The data that gets posted is coming from a form in the view, it gets parsed by body-parser
 // and added to the req.body object where it can be accessed in the POST route.
 
-app.post("/players/:id/comments", function(req, res){
+app.post("/players/:id/comments", isLoggedIn, function(req, res){
 	// lookup campground using ID
 	Player.findById(req.params.id, function(err, player){
 		if(err) {
@@ -309,6 +311,20 @@ app.post("/login", passport.authenticate("local",
         failureRedirect: "/login"
     }), function(req, res){
 });
+
+//logic rout for log out
+app.get("/logout", function(req, res) {
+    req.logout();
+    res.redirect("/players");
+});
+
+// function to insure user is logged in
+function isLoggedIn(req, res, next){
+    if (req.isAuthenticated()){
+        return next();
+    }
+    res.redirect("/login");
+}
 
 
 // ******************************************
