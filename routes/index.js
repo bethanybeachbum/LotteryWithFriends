@@ -41,7 +41,8 @@ router.get("/login", function(req, res) {
 // handle sign up logic
 router.post("/login", passport.authenticate("local",
     {
-        successRedirect: "/players",
+        // successRedirect: "/players",
+        successRedirect: "/",
         failureRedirect: "/login"
     }), function(req, res){
 });
@@ -49,7 +50,8 @@ router.post("/login", passport.authenticate("local",
 //logic rout for log out
 router.get("/logout", function(req, res) {
     req.logout();
-    res.redirect("/players");
+    // res.redirect("/players");
+    res.redirect("/");
 });
 
 // function to insure user is logged in

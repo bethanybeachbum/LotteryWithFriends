@@ -32,6 +32,11 @@ router.post("/", isLoggedIn, function(req, res){
 				if(err){
 				 console.log(err);
 				 } else {
+				 	// Add username and ID to comment
+				 	comment.author.id = req.user._id;
+				 	comment.author.username = req.user.username;
+				 	// Save comment
+				 	comment.save();
 					player.comments.push(comment);	
 					player.save();
 					res.redirect('/players/' + player._id);

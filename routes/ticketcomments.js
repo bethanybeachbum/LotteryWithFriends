@@ -31,8 +31,14 @@ router.post("/", function(req, res){
 				if(err){
 				 console.log(err);
 				 } else {
+				 	// Add username and ID to comment
+				 	comment.author.id = req.user._id;
+				 	comment.author.username = req.user.username;
+				 	// Save comment
+				 	comment.save();
 					ticket.comments.push(comment);	
 					ticket.save();
+					console.log(comment);
 					res.redirect('/tickets/' + ticket._id);
 				 }
 			});

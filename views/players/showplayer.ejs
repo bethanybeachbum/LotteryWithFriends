@@ -17,10 +17,14 @@
                 <img class="img-responsive" src="<%= player.image %>">
                 <div class="caption-full">
                     <h4 class="pull-right">This is a great player</h4>
-                    <h4><a><%=player.name%></a></h4>
+                    <h4><a><%=player.person%></a></h4>
                     <p><%= player.description %></p>
-                    <p><%= player.contactInfo %></p>
-                    <p><%= player.wager %></p>
+                    <p>Contact Information: <%= player.contactInfo %></p>
+                    <p>Amount wagered: <%= player.wager %></p>
+                    <p>
+                        <em>Submitted By: <%= player.author.username %></em>
+                    </p>
+                    <a class="btn btn-warning" href="/players/<%= player._id %>/edit">Edit</a>
                 </div>
             </div>
             <div class="well">
@@ -31,7 +35,7 @@
                 <% player.comments.forEach(function(comment){ %>
                     <div class="row">
                         <div class="col-md-12">
-                            <strong><%= comment.author %></strong>
+                            <strong><%= comment.author.username %></strong>
                             <span class="pull-right">10 days ago</span>
                             <p>
                                 <%= comment.text %> 

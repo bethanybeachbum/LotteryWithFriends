@@ -36,34 +36,34 @@ var playerData = [
 function seedPlayerDB(){
 		//Remove all players
 		Player.remove({}, function(err){
-				if(err){
-					console.log(err);
-				}      
-				console.log("removed players");
+			// 	if(err){
+			// 		console.log(err);
+			// 	}      
+			// 	console.log("removed players");
 
-					// Add a few players
-						var counter = 1;
-			playerData.forEach(function(seed){
-					Player.create(seed, function (err, playerData){
-							if(err){
-								console.log(err);
-							} else {
-								console.log("added a player " + counter);
-								counter = counter + 1;
-								Comment.create({text: "this player is hoping for a win",
-									 author: "Jomer"
-									 }, function(err, comment){
-											if(err) {
-												console.log(err);
-											} else {
-												playerData.comments.push(comment);
-												playerData.save();
-												console.log("Created new comment")
-											}
-									});
-							}
-					});
-			});
+			// 		// Add a few players
+			// 			var counter = 1;
+			// 		playerData.forEach(function(seed){
+			// 		Player.create(seed, function (err, playerData){
+			// 				if(err){
+			// 					console.log(err);
+			// 				} else {
+			// 					console.log("added a player " + counter);
+			// 					counter = counter + 1;
+			// 					Comment.create({text: "this player is hoping for a win",
+			// 						 author: "Jomer"
+			// 						 }, function(err, comment){
+			// 								if(err) {
+			// 									console.log(err);
+			// 								} else {
+			// 									playerData.comments.push(comment);
+			// 									playerData.save();
+			// 									console.log("Created new comment")
+			// 								}
+			// 						});
+			// 				}
+			// 		});
+			// });
 	});		
 }
 

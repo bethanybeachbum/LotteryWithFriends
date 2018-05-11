@@ -19,6 +19,11 @@
                     <h4 class="pull-right">This is the Ticket!</h4>
                     <h4><a><%=ticket.number%></a></h4>
                     <p><%= ticket.description %></p>
+                    <p>
+                        <em>Submitted By: <%= ticket.author.username %></em>
+                        <%= ticket.author._id  %>
+                    </p>
+                    <a class="btn btn-warning" href="/tickets/<%= ticket._id %>/edit">Edit</a>
                 </div>
             </div>
             <div class="well">
@@ -29,7 +34,7 @@
                 <% ticket.comments.forEach(function(comment){ %>
                     <div class="row">
                         <div class="col-md-12">
-                            <strong><%= comment.author %></strong>
+                            <strong><%= comment.author.username %></strong>
                             <span class="pull-right">10 days ago</span>
                             <p>
                                 <%= comment.text %> 

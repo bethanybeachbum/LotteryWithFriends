@@ -7,6 +7,7 @@ var express 			= require("express"),
 	mongoose 			= require("mongoose"),
 	passport    		= require("passport"),
     LocalStrategy   	= require("passport-local"),
+    methodOverride		= require("method-override"),
     User            	= require("./models/user"),
 	Ticket 				= require("./models/ticket"),
 	Player				= require("./models/player"),
@@ -14,8 +15,8 @@ var express 			= require("express"),
 	seedTicketDB		= require("./seedTickets"),
 	seedPlayerDB		= require("./seedPlayers")
 
-seedPlayerDB();
-seedTicketDB();
+// seedPlayerDB();  SEED PLAYER DATABASE
+// seedTicketDB();  SEED TICKET DATABASE
 
 // requiring routes
 var playercommentRoutes = require("./routes/playercomments"),
@@ -28,6 +29,7 @@ mongoose.connect("mongodb://localhost/lotteryDB");
 app.use(bodyParser.urlencoded({extended: true}));
 app.set("view engine", "ejs");
 app.use(express.static(__dirname + "/public"));
+app.use(methodOverride("_method"));
 
 // PASSPORT CONFIGURATION
 app.use(require("express-session")({
