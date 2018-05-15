@@ -3,6 +3,7 @@
 var express = require("express");
 var router = express.Router();
 var Player = require("../models/player");
+// var middleware = require("../middleware");
 
 // INDEX -- show all players 
 router.get("/", function(req, res){
@@ -67,19 +68,15 @@ router.get("/:id", function(req, res){
 	});
 });
 
-// EDIT -- PLAYER ROUTE
-router.get("/:id/edit", function (req, res){
+// EDIT PLAYER ROUTE
+router.get("/:id/edit", checkPlayerOwnership, function (req, res){
 	Player.findById(req.params.id, function(err,foundPlayer){
-		if(err) {
-			res.redirect("/players");
-		} else {
-			res.render("players/editplayer", {player: foundPlayer});
-		}
-	});
+		res.render("players/editplayer", {player: foundPlayer});
+	});	
 });
 
 // UPDATE PLAYER ROUTE
-router.put("/:id", function(req, res){
+router.put("/:id", checkPlayerOwnership, function(req, res){
 	//find and update the correct player
 	Player.findByIdAndUpdate(req.params.id, req.body.player, function(err, updatePlayer){
 		if(err){
@@ -88,8 +85,39 @@ router.put("/:id", function(req, res){
 			res.redirect("/players/" + req.params.id);
 		}
 	});
-	// then redirect somewhere on show page
 });
+
+//DESTROY PLAYER ROUTE
+router.delete("/:id", checkPlayerOwnership, function(req, res){
+	Player.findByIdAndRemove(req.params.id, function(err){
+		if(err) {
+			res.redirect("/players");
+		} else {
+			res.redirect("/players");
+		}	
+	});
+});
+
+//Check Player Ownership
+function checkPlayerOwnership(req, res, next) {
+	if(req.isAuthenticated()){
+		Player.findById(req.params.id, function(err,foundPlayer){
+			if(err) {
+				res.redirect("back");
+			} else {
+				// does user own the ticket?
+				if(foundPlayer.author.id.equals(req.user._id)) {
+				next();
+			} else {
+				res.redirect();	
+			}
+			}
+		});	
+	} else {
+	res.redirect("back");
+	}	
+		
+}
 
 
 // function to insure user is logged in

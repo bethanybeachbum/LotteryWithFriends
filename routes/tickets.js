@@ -4,6 +4,7 @@
 var express = require("express");
 var router = express.Router();
 var Ticket = require("../models/ticket");
+// var middleware = require("../middleware");
 
 // INDEX - show all tickets 
 router.get("/", function(req, res){
@@ -70,19 +71,15 @@ router.get("/:id", function(req, res){
 });
 
 // EDIT TICKET ROUTE
-router.get("/:id/edit", function (req, res){
+router.get("/:id/edit", checkTicketOwnership, function (req, res){
 	Ticket.findById(req.params.id, function(err,foundTicket){
-		if(err) {
-			res.redirect("tickets");
-		} else {
-			res.render("tickets/editticket", {ticket: foundTicket});
-		}
-	});
+		res.render("tickets/editticket", {ticket: foundTicket});
+	});	
 });
 
 
 // UPDATE TICKET ROUTE
-router.put("/:id", function(req, res){
+router.put("/:id", checkTicketOwnership, function(req, res){
 	//find and update the correct ticket
 	Ticket.findByIdAndUpdate(req.params.id, req.body.ticket, function(err, updateTicket){
 		if(err){
@@ -93,6 +90,39 @@ router.put("/:id", function(req, res){
 	});
 	// then redirect somewhere on show page
 });
+
+//DESTROY TICKET ROUTE
+router.delete("/:id", checkTicketOwnership, function(req, res){
+	Ticket.findByIdAndRemove(req.params.id, function(err){
+		if(err) {
+			res.redirect("/tickets");
+		} else {
+			res.redirect("/tickets");
+		}	
+	});
+});
+
+//Check Ticket Ownership
+function checkTicketOwnership(req, res, next) {
+	if(req.isAuthenticated()){
+			
+		Ticket.findById(req.params.id, function(err,foundTicket){
+			if(err) {
+				res.redirect("back");
+			} else {
+				// does user own the ticket?
+				if(foundTicket.author.id.equals(req.user._id)) {
+				next();
+			} else {
+				res.redirect();	
+			}
+			}
+		});	
+	} else {
+	res.redirect("back");
+	}	
+		
+}
 
 // function to insure user is logged in
 function isLoggedIn(req, res, next){

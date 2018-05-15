@@ -46,6 +46,19 @@ router.post("/", function(req, res){
 	});
 });	
 
+router.get("/:comment_id/edit", function(req, res){
+	Comment.findById(req.params.comment_id, function(err, foundComment) {
+	   if(err) {
+	   	res.redirect("back");
+	   } else {
+	   	res.render("ticketcomments/edit", {ticket_id:req.params.id, comment: foundComment});
+	   }
+	});
+});
+
+
+
+
 // function to insure user is logged in
 function isLoggedIn(req, res, next){
     if (req.isAuthenticated()){
