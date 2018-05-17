@@ -5,8 +5,9 @@ var express = require("express");
 var router = express.Router({mergeParams: true});
 var Ticket = require("../models/ticket");
 var Comment = require("../models/comment");
+var middleware = require("../middleware");
 
-router.get ("/new", isLoggedIn, function(req, res){
+router.get ("/new", middleware.isLoggedIn, function(req, res){
 		// find ticket by ID 
 		Ticket.findById(req.params.id, function(err, ticket){
 			if(err){
@@ -46,27 +47,44 @@ router.post("/", function(req, res){
 	});
 });	
 
-router.get("/:comment_id/edit", function(req, res){
-	Comment.findById(req.params.comment_id, function(err, foundComment) {
-	   if(err) {
-	   	res.redirect("back");
-	   } else {
-	   	res.render("ticketcomments/edit", {ticket_id:req.params.id, comment: foundComment});
-	   }
-	});
+// TICKET COMMENT EDIT ROUTE
+router.get("/:comment_id/edit", middleware.checkCommentOwnership, function(req, res){
+   Comment.findById(req.params.comment_id, function(err, foundComment){
+      if(err){
+          res.redirect("back");
+      } else {
+        res.render("ticketcomments/edit", {ticket_id: req.params.id, comment: foundComment});
+      }
+   });
+});
+
+//TICKET COMMENTS UPDATE ROUTE
+router.put("/:comment_id", middleware.checkCommentOwnership, function(req, res){
+   	Comment.findByIdAndUpdate(req.params.comment_id, req.body.comment, function (err, updatedComment){
+	   	if(err) {
+	   		res.redirect("back");
+	   	} else {
+	   		res.redirect("/tickets/"  + req.params.id);
+	   	}
+   	});
 });
 
 
+// This can easily be fixed by changing the CSS rule (in your stylesheet) from an id to a class, 
+// e.g., #delete-form  to .delete-form then changing both lines of the HTML (24 and 46) 
+// from id="delete-form"  to class="delete-form" 
 
-
-// function to insure user is logged in
-function isLoggedIn(req, res, next){
-    if (req.isAuthenticated()){
-        return next();
-    }
-    res.redirect("/login");
-}
-
+// TICKET COMMENT DESTROY ROUTE
+router.delete("/:comment_id", middleware.checkCommentOwnership, function(req, res){
+	//findByIDAndRemove
+	Comment.findByIdAndRemove(req.params.comment_id, function(err)  {
+		if(err) {
+			res.redirect("back");
+		} else {
+			res.redirect("/tickets/" + req.params.id);
+		}
+	});
+});
 
 module.exports = router;
 

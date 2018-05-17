@@ -7,9 +7,9 @@
 		
 		<h1 style="text-align: center;">Edit Player Comment</h1>
 		<div style="width: 30%; margin: 25px auto">
-			<form action="/players/<%=player._id%>/comments/<%= comment._id %>?_method=PUT" method="POST">
+			<form action="/players/<%=player_id%>/comments/<%= comment._id %>?_method=PUT" method="POST">
 				<div class="form-group">
-						<input class="form-control" type="text" name="comment[text]" value="<% comment.text %>">					
+						<input class="form-control" type="text" name="comment[text]" value="<%= comment.text %>">					
 					</div>
 					
 				

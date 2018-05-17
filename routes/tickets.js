@@ -4,7 +4,7 @@
 var express = require("express");
 var router = express.Router();
 var Ticket = require("../models/ticket");
-// var middleware = require("../middleware");
+var middleware = require("../middleware");
 
 // INDEX - show all tickets 
 router.get("/", function(req, res){
@@ -21,7 +21,7 @@ router.get("/", function(req, res){
 
 // CREATE - add new player to database -- matches line 145
 // does logic of adding tickets
-router.post("/", isLoggedIn, function(req, res){
+router.post("/", middleware.isLoggedIn, function(req, res){
 	// get data from form
 	var number = req.body.number;
 	var image = req.body.image;
@@ -50,7 +50,7 @@ router.post("/", isLoggedIn, function(req, res){
 
 
 //  NEW -- shows the form for new ticket - matches line 171
-router.get("/newticket", isLoggedIn, function(req, res){
+router.get("/newticket", middleware.isLoggedIn, function(req, res){
 	// find the ticket with provided ID
 	res.render("tickets/newticket");
 });
@@ -71,7 +71,7 @@ router.get("/:id", function(req, res){
 });
 
 // EDIT TICKET ROUTE
-router.get("/:id/edit", checkTicketOwnership, function (req, res){
+router.get("/:id/edit", middleware.checkTicketOwnership, function (req, res){
 	Ticket.findById(req.params.id, function(err,foundTicket){
 		res.render("tickets/editticket", {ticket: foundTicket});
 	});	
@@ -79,7 +79,7 @@ router.get("/:id/edit", checkTicketOwnership, function (req, res){
 
 
 // UPDATE TICKET ROUTE
-router.put("/:id", checkTicketOwnership, function(req, res){
+router.put("/:id", middleware.checkTicketOwnership, function(req, res){
 	//find and update the correct ticket
 	Ticket.findByIdAndUpdate(req.params.id, req.body.ticket, function(err, updateTicket){
 		if(err){
@@ -92,7 +92,7 @@ router.put("/:id", checkTicketOwnership, function(req, res){
 });
 
 //DESTROY TICKET ROUTE
-router.delete("/:id", checkTicketOwnership, function(req, res){
+router.delete("/:id", middleware.checkTicketOwnership, function(req, res){
 	Ticket.findByIdAndRemove(req.params.id, function(err){
 		if(err) {
 			res.redirect("/tickets");
@@ -101,36 +101,5 @@ router.delete("/:id", checkTicketOwnership, function(req, res){
 		}	
 	});
 });
-
-//Check Ticket Ownership
-function checkTicketOwnership(req, res, next) {
-	if(req.isAuthenticated()){
-			
-		Ticket.findById(req.params.id, function(err,foundTicket){
-			if(err) {
-				res.redirect("back");
-			} else {
-				// does user own the ticket?
-				if(foundTicket.author.id.equals(req.user._id)) {
-				next();
-			} else {
-				res.redirect();	
-			}
-			}
-		});	
-	} else {
-	res.redirect("back");
-	}	
-		
-}
-
-// function to insure user is logged in
-function isLoggedIn(req, res, next){
-    if (req.isAuthenticated()){
-        return next();
-    }
-    res.redirect("/login");
-}
-
 
 module.exports = router;

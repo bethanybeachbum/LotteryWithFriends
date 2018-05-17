@@ -5,8 +5,9 @@ var express = require("express");
 var router = express.Router({mergeParams: true});
 var Player = require("../models/player");
 var Comment = require("../models/comment");
+var middleware = require("../middleware");
 
-router.get ("/new", isLoggedIn, function(req, res){
+router.get ("/new", middleware.isLoggedIn, function(req, res){
 	// find player by ID 
 	Player.findById(req.params.id, function(err, player){
 		if(err){
@@ -20,7 +21,7 @@ router.get ("/new", isLoggedIn, function(req, res){
 // The data that gets posted is coming from a form in the view, it gets parsed by body-parser
 // and added to the req.body object where it can be accessed in the POST route.
 
-router.post("/", isLoggedIn, function(req, res){
+router.post("/", middleware.isLoggedIn, function(req, res){
 	// lookup campground using ID
 	Player.findById(req.params.id, function(err, player){
 		if(err) {
@@ -44,9 +45,10 @@ router.post("/", isLoggedIn, function(req, res){
 			});
 		}
 	});
-});
+});                                                                                                                                                                                                                                                                                                                                                                                           
 
-router.get("/:comment_id/edit", function(req, res){
+//PLAYER COMMENTS EDIT ROUTE
+router.get("/:comment_id/edit", middleware.checkCommentOwnership, function(req, res){
 	Comment.findById(req.params.comment_id, function(err, foundComment) {
 	   if(err) {
 	   	res.redirect("back");
@@ -56,13 +58,26 @@ router.get("/:comment_id/edit", function(req, res){
 	});
 });
 
-// function to insure user is logged in
-function isLoggedIn(req, res, next){
-    if (req.isAuthenticated()){
-        return next();
-    }
-    res.redirect("/login");
-}
+//PLAYER COMMENTS UPDATE ROUTE
+router.put("/:comment_id", middleware.checkCommentOwnership, function(req, res){
+   	Comment.findByIdAndUpdate(req.params.comment_id, req.body.comment, function (err, updatedComment){
+   		if(err) {
+   			res.redirect("back");
+   		} else {
+   			res.redirect("/players/" + req.params.id);
+   		}
+   	});
+});
 
+// PLAYER COMMENT DESTROY ROUTE
+router.delete("/:comment_id", middleware.checkCommentOwnership, function(req, res){
+	Comment.findByIdAndRemove(req.params.comment_id, function(err)  {
+		if(err) {
+			res.redirect("back");
+		} else {
+			res.redirect("/players/"+ req.params.id);
+		}
+	});
+});
 
 module.exports = router;

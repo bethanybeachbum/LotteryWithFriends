@@ -3,7 +3,7 @@
 var express = require("express");
 var router = express.Router();
 var Player = require("../models/player");
-// var middleware = require("../middleware");
+var middleware = require("../middleware");
 
 // INDEX -- show all players 
 router.get("/", function(req, res){
@@ -18,7 +18,7 @@ router.get("/", function(req, res){
 });
 
 // CREATE - add new player to database 
-router.post("/", isLoggedIn, function(req, res){
+router.post("/", middleware.isLoggedIn, function(req, res){
 	// get data from form
 	var person = req.body.person;
 	var image = req.body.image;
@@ -49,7 +49,7 @@ Player.create(newPlayer, function(err, newlyCreated){
 });
 
 // NEW form to create new player 
-router.get("/newplayer", isLoggedIn, function(req, res){
+router.get("/newplayer", middleware.isLoggedIn, function(req, res){
 	res.render("players/newplayer.ejs");
 });
 
@@ -69,14 +69,14 @@ router.get("/:id", function(req, res){
 });
 
 // EDIT PLAYER ROUTE
-router.get("/:id/edit", checkPlayerOwnership, function (req, res){
+router.get("/:id/edit", middleware.checkPlayerOwnership, function (req, res){
 	Player.findById(req.params.id, function(err,foundPlayer){
 		res.render("players/editplayer", {player: foundPlayer});
 	});	
 });
 
 // UPDATE PLAYER ROUTE
-router.put("/:id", checkPlayerOwnership, function(req, res){
+router.put("/:id", middleware.checkPlayerOwnership, function(req, res){
 	//find and update the correct player
 	Player.findByIdAndUpdate(req.params.id, req.body.player, function(err, updatePlayer){
 		if(err){
@@ -88,7 +88,7 @@ router.put("/:id", checkPlayerOwnership, function(req, res){
 });
 
 //DESTROY PLAYER ROUTE
-router.delete("/:id", checkPlayerOwnership, function(req, res){
+router.delete("/:id", middleware.checkPlayerOwnership, function(req, res){
 	Player.findByIdAndRemove(req.params.id, function(err){
 		if(err) {
 			res.redirect("/players");
@@ -97,36 +97,5 @@ router.delete("/:id", checkPlayerOwnership, function(req, res){
 		}	
 	});
 });
-
-//Check Player Ownership
-function checkPlayerOwnership(req, res, next) {
-	if(req.isAuthenticated()){
-		Player.findById(req.params.id, function(err,foundPlayer){
-			if(err) {
-				res.redirect("back");
-			} else {
-				// does user own the ticket?
-				if(foundPlayer.author.id.equals(req.user._id)) {
-				next();
-			} else {
-				res.redirect();	
-			}
-			}
-		});	
-	} else {
-	res.redirect("back");
-	}	
-		
-}
-
-
-// function to insure user is logged in
-function isLoggedIn(req, res, next){
-    if (req.isAuthenticated()){
-        return next();
-    }
-    res.redirect("/login");
-}
-
 
 module.exports = router;
