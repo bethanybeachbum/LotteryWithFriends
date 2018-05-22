@@ -7,6 +7,7 @@ var Player = require("../models/player");
 var Comment = require("../models/comment");
 var middleware = require("../middleware");
 
+// PLAYER COMMENTS NEW
 router.get ("/new", middleware.isLoggedIn, function(req, res){
 	// find player by ID 
 	Player.findById(req.params.id, function(err, player){
@@ -21,6 +22,7 @@ router.get ("/new", middleware.isLoggedIn, function(req, res){
 // The data that gets posted is coming from a form in the view, it gets parsed by body-parser
 // and added to the req.body object where it can be accessed in the POST route.
 
+// PLAYER COMMENTS CREATE 
 router.post("/", middleware.isLoggedIn, function(req, res){
 	// lookup campground using ID
 	Player.findById(req.params.id, function(err, player){
@@ -31,7 +33,8 @@ router.post("/", middleware.isLoggedIn, function(req, res){
 			// req.body.comment has both pieces of comment info
 			Comment.create(req.body.comment, function(err,comment){
 				if(err){
-				 console.log(err);
+					
+					console.log(err);
 				 } else {
 				 	// Add username and ID to comment
 				 	comment.author.id = req.user._id;
