@@ -23,32 +23,32 @@ var ticketData = [
 function seedTicketDB(){
 		// Remove all tickets
 		Ticket.remove({}, function(err){
-			if(err){
-				console.log(err);
-			} 
-			console.log("Removed Tickets");	
-		// Add a few tickets
-		ticketData.forEach(function(seed){
-				Ticket.create(seed, function (err, ticketData){
-						if(err){
-							console.log(err);
-						} else {
-							console.log("Added a ticket");
-							Comment.create(
-									{text: "this ticket may be the winner!!!!",
-									 author: "Jomer"
-										 }, function(err, comment){
-												if(err) {
-													console.log(err);
-												} else {
-													ticketData.comments.push(comment);
-													ticketData.save();
-													console.log("Created new comment");
-												}
-										});
-						}
-					});
-				});
+			// if(err){
+			// 	console.log(err);
+			// } 
+			// console.log("Removed Tickets");	
+			// // Add a few tickets
+			// ticketData.forEach(function(seed){
+			// 	Ticket.create(seed, function (err, ticketData){
+			// 			if(err){
+			// 				console.log(err);
+			// 			} else {
+			// 				console.log("Added a ticket");
+			// 				Comment.create(
+			// 						{text: "this ticket may be the winner!!!!",
+			// 						 author: "Jomer"
+			// 							 }, function(err, comment){
+			// 									if(err) {
+			// 										console.log(err);
+			// 									} else {
+			// 										ticketData.comments.push(comment);
+			// 										ticketData.save();
+			// 										console.log("Created new comment");
+			// 									}
+			// 							});
+			// 			}
+			// 		});
+			// 	});
 		});
 }
 

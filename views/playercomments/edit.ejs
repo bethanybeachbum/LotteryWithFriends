@@ -1,15 +1,15 @@
-<!-- P:AYER COMMENT FORM -->
+<!-- P:AYER COMMENT EDIT -->
 
 <% include ../partials/header %>
 
 <div class="container">
 	<div class="row">
 		
-		<h1 style="text-align: center;">Add a new Player Comment to: <%= player.person %> </h1>
+		<h1 style="text-align: center;">Edit Player Comment</h1>
 		<div style="width: 30%; margin: 25px auto">
-			<form action="/players/<%=player._id%>/comments" method="POST">
+			<form action="/players/<%=player_id%>/comments/<%= comment._id %>?_method=PUT" method="POST">
 				<div class="form-group">
-						<input class="form-control" type="text" name="comment[text]" placeholder="text">					
+						<input class="form-control" type="text" name="comment[text]" value="<%= comment.text %>">					
 					</div>
 					
 				

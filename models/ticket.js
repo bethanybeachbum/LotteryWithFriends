@@ -5,6 +5,13 @@ var ticketSchema = new mongoose.Schema({
 	number: String,
 	image: String,
 	description: String,
+	author: {
+	  id: {
+	      type: mongoose.Schema.Types.ObjectId,
+	      ref: "User"
+	  },  
+	  username: String
+	},
 	comments: [
       {
          type: mongoose.Schema.Types.ObjectId,

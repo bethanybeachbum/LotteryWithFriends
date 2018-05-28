@@ -5,6 +5,16 @@ var playerSchema = new mongoose.Schema({
 	image: String,
 	contactInfo: String,
 	wager: String,
+<<<<<<< HEAD
+=======
+	author: {
+	  id: {
+	      type: mongoose.Schema.Types.ObjectId,
+	      ref: "User"
+	  },  
+	  username: String
+	},
+>>>>>>> develop
 	comments: [
       {
          type: mongoose.Schema.Types.ObjectId,
