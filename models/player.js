@@ -5,6 +5,9 @@ var playerSchema = new mongoose.Schema({
 	image: String,
 	contactInfo: String,
 	wager: String,
+	location: String,
+	lat: Number,
+	lng: Number,
 	author: {
 	  id: {
 	      type: mongoose.Schema.Types.ObjectId,

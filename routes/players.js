@@ -26,6 +26,19 @@ cloudinary.config({
   api_secret: process.env.CLOUDINARY_API_SECRET
 });
 
+var NodeGeocoder = require('node-geocoder');
+ 
+var options = {
+  provider: 'google',
+  httpAdapter: 'https',
+  apiKey: process.env.GEOCODER_API_KEY,
+  formatter: null
+};
+ 
+var geocoder = NodeGeocoder(options);
+
+
+
 // INDEX -- show all players 
 router.get("/", function(req, res){
 	// get all tickets from lotteryBD database
@@ -40,52 +53,50 @@ router.get("/", function(req, res){
 
 // CREATE - add new player to database 
 router.post("/", middleware.isLoggedIn, upload.single('image'), function(req, res){
-	cloudinary.uploader.upload(req.file.path, function(result) {
-  // add cloudinary url for the image to the campground object under image property
-  req.body.player.image = result.secure_url;
-  // add author to campground
-  req.body.player.author = {
-    id: req.user._id,
-    username: req.user.username
-  }
-  Player.create(req.body.player, function(err, player) {
-    if (err) {
-      req.flash('error', err.message);
+	var person = req.body.player.person;
+  var desc = req.body.player.description;
+  var wager = req.body.player.wager;
+  var contactInfo = req.body.player.contactInfo;
+	
+cloudinary.uploader.upload(req.file.path, function(result) {
+  var image = result.secure_url;
+  var author = {
+      id: req.user._id,
+      username: req.user.username
+      };
+  
+  //  Insertion of Google Maps code begins here:
+  geocoder.geocode(req.body.location, function (err, data) {
+    if (err || !data.length) {
+      req.flash('error', 'Invalid address');
       return res.redirect('back');
     }
-    res.redirect('/players/' + player.id);
+    var lat = data[0].latitude;
+    var lng = data[0].longitude;
+    var location = data[0].formattedAddress;
+    var newPlayer = {
+      person: person, 
+      image: image, 
+      description: desc, 
+      author:author, 
+      wager:wager, 
+      location: location, 
+      lat: lat, 
+      lng: lng
+    };
+  // END of Google Maps code
+  
+      Player.create(newPlayer, function(err, player) {
+        if (err) {
+          req.flash('error', err.message);
+          return res.redirect('back');
+        }
+        res.redirect('/players/' + player.id);
+      });
+    });
   });
 });
-});	
 	
-// 	// get data from form
-// 	var person = req.body.person;
-// 	var image = req.body.image;
-// 	var contactInfo = req.body.contactInfo;
-// 	var wager = req.body.wager;
-// 	var author = {
-// 		id: req.user._id,
-// 		username: req.user.username
-// 	}
-// 	var newPlayer = {
-// 		person: person, 
-// 		image: image,
-// 		contactInfo: contactInfo,
-// 		wager: wager,
-// 		author:author
-// 	}
-	
-// // create a new player and add to players database -- matches line 101
-// Player.create(newPlayer, function(err, newlyCreated){
-// 		if(err){
-// 			console.log(err);
-// 		}	else {
-// 			res.redirect("/players");
-// 		}
-// 	});
-// 	// players.push(newPlayer);
-// 	// redirect back to campgrounds
-// });
 
 // NEW form to create new player 
 router.get("/newplayer", middleware.isLoggedIn, function(req, res){
@@ -110,21 +121,35 @@ router.get("/:id", function(req, res){
 // EDIT PLAYER ROUTE
 router.get("/:id/edit", middleware.checkPlayerOwnership, function (req, res){
 	Player.findById(req.params.id, function(err,foundPlayer){
-		res.render("players/editplayer", {player: foundPlayer});
+		res.render("/players/editplayer", {player: foundPlayer});
+		// res.render("players/editplayer", {player: foundPlayer});
 	});	
 });
 
-// UPDATE PLAYER ROUTE
+// NEW UPDATE PLAYER ROUTE
 router.put("/:id", middleware.checkPlayerOwnership, function(req, res){
-	//find and update the correct player
-	Player.findByIdAndUpdate(req.params.id, req.body.player, function(err, updatePlayer){
-		if(err){
-			res.redirect("/players");
-		} else {
-			res.redirect("/players/" + req.params.id);
-		}
-	});
+  geocoder.geocode(req.body.location, function (err, data) {
+    if (err || !data.length) {
+      req.flash('error', 'Invalid address');
+      return res.redirect('back');
+    }
+    req.body.player.lat = data[0].latitude;
+    req.body.player.lng = data[0].longitude;
+    req.body.player.location = data[0].formattedAddress;
+
+    Player.findByIdAndUpdate(req.params.id, req.body.player, function(err, player){
+        if(err){
+            req.flash("error", err.message);
+            res.redirect("back");
+        } else {
+            req.flash("success","Successfully Updated!");
+            res.redirect("/players/" + player._id);
+        }
+    });
+  });
 });
+
+
 
 //DESTROY PLAYER ROUTE
 router.delete("/:id", middleware.checkPlayerOwnership, function(req, res){

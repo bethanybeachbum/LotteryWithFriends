@@ -1,5 +1,7 @@
 // LOTTERY WITH FRIENDS
 
+require('dotenv').config();	
+
 // FirstTwo lines are required for every EXPRESS JS app
 var express 			= require("express"),
 	app 				= express(),
@@ -16,7 +18,7 @@ var express 			= require("express"),
 	seedTicketDB		= require("./seedTickets"),
 	seedPlayerDB		= require("./seedPlayers")
 	
-require('dotenv').config();	
+
 
 // seedPlayerDB();  SEED PLAYER DATABASE
 // seedTicketDB();  SEED TICKET DATABASE
