@@ -1,7 +1,4 @@
-
-
 <% include ../partials/header %>
-
 <div class="container">
     <div class="row">
         <div class="col-md-3">
@@ -20,10 +17,11 @@
                     <h4><a><%=ticket.number%></a></h4>
                     <p><%= ticket.description %></p>
                     <p>
-                        <em>Submitted By: <%= ticket.author.username %></em>
-                        <%= ticket.author._id  %>
+                        
+                    <em>Submitted by: <a href="/users/<%= ticket.author.id %> "><%= ticket.author.username %> </a>, <%= moment(ticket.createdAt).fromNow() %></em>
+                    <%= ticket.author._id  %>
                     </p>
-                    <% if(currentUser && ticket.author.id.equals(currentUser._id)){ %>
+                    <% if(currentUser && ticket.author.id.equals(currentUser._id) || currentUser && currentUser.isAdmin ){ %>
                         <a class="btn btn-warning" href="/tickets/<%= ticket._id %>/edit">Edit</a>
                         <form id="delete-form" action="/tickets/<%=ticket._id %>?_method=DELETE" method="POST">
                            <button class="btn btn-danger">Delete</button> 
@@ -40,7 +38,7 @@
                     <div class="row">
                         <div class="col-md-12">
                             <strong><%= comment.author.username %></strong>
-                            <span class="pull-right">10 days ago</span>
+                            <span class="pull-right"><%= moment(comment.createdAt).fromNow() %></span>
                             <p>
                                 <%= comment.text %> 
                             </p>    

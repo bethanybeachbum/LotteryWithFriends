@@ -37,6 +37,9 @@ app.use(express.static(__dirname + "/public"));
 app.use(methodOverride("_method"));
 app.use(flash());
 
+// MOMENT - provides time stamp to user creations of players, tickets and comments
+app.locals.moment = require('moment');
+
 // PASSPORT CONFIGURATION
 app.use(require("express-session")({
     secret: "Wilson wins the cutest dog",
@@ -57,7 +60,7 @@ app.use(function(req, res, next){
 });
 
 app.use("/", indexRoutes);
-app.use("/players/:id/comments",playercommentRoutes); 
+app.use("/players/:id/comments", playercommentRoutes); 
 app.use("/tickets/:id/comments", ticketcommentRoutes);
 app.use("/players", playerRoutes);
 app.use("/tickets", ticketRoutes);
@@ -71,56 +74,3 @@ app.use(express.static("public"));
   app.listen(process.env.PORT, process.env.IP, function(){
   console.log('LOTTERY FOR FRIENDS Server listening on port 3000');
 });
-
-
-// ******************************************
-// START CODEANYWHERE SERVER
-// ******************************************
-//app.listen(process.env.PORT, function() {
-//  console.log('LOTTERY FOR FRIENDS Server listening on port 3000');
-//});
-
-
-// 	// create a new ticket and save to DB - matches line 159
-// app.get("/tickets", function(req, res){
-// 	// get all tickets from lotteryBD database
-// 	Ticket.find({}, function (err, allTickets){
-// 		if(err){
-// 			console.log(err);
-// 		} else {
-// 			res.render("indextickets", {tickets:allTickets});
-// 		}
-// 	});
-// });
-
-// Player.create(
-// 	{
-// 	person: "Jack Johnson",
-// 	image: "https://s.hdnux.com/photos/67/17/51/14481985/3/920x920.jpg",
-// 	contactInfo: "jackj@hotmail.com",
-// 	wager: 10
-// 	}, 
-// 	function(err, player) {
-// 		if(err) {
-// 			 console.log(err);
-// 	} else {
-// 	console.log ("NEWLY CREATED PLAYER");
-// 	console.log(player);
-// 	}
-// 	});
-
-// Ticket.create( 
-// 	{
-// 	number: "12 34 56 78 90",
-// 	image: "https://www.ctlottery.org/Modules/Scratch/user-files/tickets-ro/1304.jpg",
-// 	description: "powerball"
-// 	}, 
-// 	function(err, ticket) {
-// 		if(err) {
-// 			 console.log(err);
-// 	} else {
-// 	console.log ("NEWLY CREATED TICKET");
-// 	console.log(ticket);
-// 	}
-// 	});
-// **************

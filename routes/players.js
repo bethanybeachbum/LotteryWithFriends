@@ -37,19 +37,58 @@ var options = {
  
 var geocoder = NodeGeocoder(options);
 
-
-
+//#############################
 // INDEX -- show all players 
+// Pagination included
+// Search included
+
 router.get("/", function(req, res){
-	// get all tickets from lotteryBD database
-	Player.find({}, function (err, allPlayers){
-		if(err){
-			console.log(err);
-		} else {
-			res.render("players/indexplayers", {players: allPlayers, currentUser: req.user});
-		}
-	});
+    var perPage = 8;
+    var pageQuery = parseInt(req.query.page);
+    var pageNumber = pageQuery ? pageQuery : 1;
+    var noMatch = null;
+    if(req.query.search) {
+        const regex = new RegExp(escapeRegex(req.query.search), 'gi');
+        Player.find({name: regex}).skip((perPage * pageNumber) - perPage).limit(perPage).exec(function (err, allPlayers) {
+            Player.count({name: regex}).exec(function (err, count) {
+                if (err) {
+                    console.log(err);
+                    res.redirect("back");
+                } else {
+                    if(allPlayers.length < 1) {
+                        noMatch = "No Players match that query, please try again.";
+                    }
+                    res.render("players/indexplayers", {
+                        players: allPlayers,
+                        current: pageNumber,
+                        pages: Math.ceil(count / perPage),
+                        noMatch: noMatch,
+                        search: req.query.search
+                    });
+                }
+            });
+        });
+    } else {
+        // get all campgrounds from DB
+        Player.find({}).skip((perPage * pageNumber) - perPage).limit(perPage).exec(function (err, allPlayers) {
+            Player.count().exec(function (err, count) {
+                if (err) {
+                    console.log(err);
+                } else {
+                    res.render("players/indexplayers", {
+                        players: allPlayers,
+                        current: pageNumber,
+                        pages: Math.ceil(count / perPage),
+                        noMatch: noMatch,
+                        search: false
+                    });
+                }
+            });
+        });
+    }
 });
+
+//#############################
 
 // CREATE - add new player to database 
 router.post("/", middleware.isLoggedIn, upload.single('image'), function(req, res){
@@ -121,7 +160,7 @@ router.get("/:id", function(req, res){
 // EDIT PLAYER ROUTE
 router.get("/:id/edit", middleware.checkPlayerOwnership, function (req, res){
 	Player.findById(req.params.id, function(err,foundPlayer){
-		res.render("/players/editplayer", {player: foundPlayer});
+		res.render("players/editplayer", {player: foundPlayer});
 		// res.render("players/editplayer", {player: foundPlayer});
 	});	
 });
@@ -130,6 +169,7 @@ router.get("/:id/edit", middleware.checkPlayerOwnership, function (req, res){
 router.put("/:id", middleware.checkPlayerOwnership, function(req, res){
   geocoder.geocode(req.body.location, function (err, data) {
     if (err || !data.length) {
+      console.log(err);
       req.flash('error', 'Invalid address');
       return res.redirect('back');
     }
@@ -161,5 +201,10 @@ router.delete("/:id", middleware.checkPlayerOwnership, function(req, res){
 		}	
 	});
 });
+
+function escapeRegex(text) {
+    return text.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&");
+};
+
 
 module.exports = router;
