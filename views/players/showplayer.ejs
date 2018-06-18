@@ -15,10 +15,10 @@
                 <img class="img-responsive" src="<%= player.image %>">
                 <div class="caption-full">
                     <h4 class="pull-right">This is a great player</h4>
-                    <h4><a><%=player.person%></a></h4>
+                    <h4> <span class="glyphicon glyphicon-sunglasses"></span> <a><%=player.person%></a> </h4>
                     <p><%= player.description %></p>
-                    <p>Contact Information: <%= player.contactInfo %></p>
-                    <p>Amount wagered: $ <%= player.wager %></p>
+                    <p>Contact Information: <%= player.contactInfo %> </p>
+                    <p>Amount wagered: $ <%= player.wager %> </p>
                     <p>
                         <em>Submitted by: <a href="/users/<%= player.author.id%>"> <%=player.author.username %></a>, <%= moment(player.createdAt).fromNow() %></em>
                     </p>

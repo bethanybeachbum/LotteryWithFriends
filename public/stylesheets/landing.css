@@ -13,6 +13,14 @@ body {
   color: #fff;
 }
 
+#landing-header h2 {
+  color: #fff;
+}
+
+#landing-header h3 {
+  color: #fff;
+}
+
 .slideshow { 
   position: fixed;
   width: 100%;
@@ -84,4 +92,13 @@ body {
 /* Older browser support - .no-cssanimations class added by modernizr */
 .no-cssanimations .slideshow li {
 	opacity: 1;
+}
+
+.center {
+    z-index: 2;
+    position: relative;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    width: 50%;
 }

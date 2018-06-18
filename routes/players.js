@@ -49,8 +49,8 @@ router.get("/", function(req, res){
     var noMatch = null;
     if(req.query.search) {
         const regex = new RegExp(escapeRegex(req.query.search), 'gi');
-        Player.find({name: regex}).skip((perPage * pageNumber) - perPage).limit(perPage).exec(function (err, allPlayers) {
-            Player.count({name: regex}).exec(function (err, count) {
+        Player.find({person: regex}).skip((perPage * pageNumber) - perPage).limit(perPage).exec(function (err, allPlayers) {
+            Player.count({person: regex}).exec(function (err, count) {
                 if (err) {
                     console.log(err);
                     res.redirect("back");
@@ -69,7 +69,7 @@ router.get("/", function(req, res){
             });
         });
     } else {
-        // get all campgrounds from DB
+        // get all players from DB
         Player.find({}).skip((perPage * pageNumber) - perPage).limit(perPage).exec(function (err, allPlayers) {
             Player.count().exec(function (err, count) {
                 if (err) {
@@ -121,7 +121,8 @@ cloudinary.uploader.upload(req.file.path, function(result) {
       wager:wager, 
       location: location, 
       lat: lat, 
-      lng: lng
+      lng: lng,
+      contactInfo: contactInfo
     };
   // END of Google Maps code
   
